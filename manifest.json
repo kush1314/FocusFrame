@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "FocusFrame — Camera Control",
+  "version": "5.0.0",
+  "description": "Keep your camera on to monitor focus, with clear Start/Stop controls.",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "FocusFrame"
+  },
+  "permissions": ["offscreen", "storage"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}

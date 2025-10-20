@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>FocusFrame</title>
+    <style>
+      body {
+        width: 280px;
+        margin: 0;
+        padding: 12px;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+        background: #fff;
+        color: #111;
+      }
+      h3 {
+        margin: 0 0 10px;
+        text-align: center;
+      }
+      button {
+        width: 100%;
+        padding: 8px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        background: #f3f4f6;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      button:hover {
+        background: #e5e7eb;
+      }
+      #status {
+        margin-top: 8px;
+        text-align: center;
+        font-size: 12px;
+        color: #374151;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>FocusFrame</h3>
+    <button id="startBtn">Start Camera</button>
+    <button id="stopBtn" style="display:none;">Stop Camera</button>
+    <div id="status">Camera inactive</div>
+    <script src="popup.js"></script>
+  </body>
+</html>
