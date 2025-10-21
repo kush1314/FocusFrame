@@ -1,23 +1,13 @@
 {
-  "manifest_version": 3,
-  "name": "FocusFrame — Camera Control",
-  "version": "5.0.1",
-  "description": "Keep your camera on to monitor focus, with clear Start/Stop controls.",
-  "action": {
-    "default_popup": "popup.html",
-    "default_title": "FocusFrame"
-  },
-  "permissions": [
-    "offscreen",
-    "storage",
-    "camera"
-  ],
-  "host_permissions": ["<all_urls>"],
-  "background": {
-    "service_worker": "background.js",
-    "type": "module"
-  },
-  "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'"
+    "manifest_version": 3,
+    "name": "Camera Popup Demo",
+    "version": "1.0",
+    "description": "Shows a live camera feed in a popup window.",
+    "permissions": ["camera"],
+    "action": {
+      "default_popup": "popup.html"
+    },
+    "background": {
+      "service_worker": "background.js"
+    }
   }
-}

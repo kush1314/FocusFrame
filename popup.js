@@ -1,48 +1,49 @@
+let cameraWindowId = null;
+
 const startBtn = document.getElementById("startBtn");
 const stopBtn = document.getElementById("stopBtn");
-const statusEl = document.getElementById("status");
 
-function setStatus(text, color = "#374151") {
-  statusEl.textContent = text;
-  statusEl.style.color = color;
-}
+startBtn.addEventListener("click", async () => {
+  if (cameraWindowId) return;
 
-startBtn.addEventListener("click", () => {
-  setStatus("Starting camera…");
-  chrome.runtime.sendMessage({ type: "START_CAMERA" }, (res) => {
-    if (res?.ok) {
-      setStatus("Camera active ✅", "#047857");
-      startBtn.style.display = "none";
-      stopBtn.style.display = "block";
-      window.close(); // auto close popup so it doesn’t linger
-    } else {
-      setStatus("Error starting camera", "#b91c1c");
-    }
+  // Create small camera window without focus (prevents mac fullscreen)
+  const screenWidth = screen.availWidth;
+  const screenHeight = screen.availHeight;
+
+  const win = await chrome.windows.create({
+    url: "camera.html",
+    type: "popup",
+    width: 500,
+    height: 400,
+    left: screenWidth - 520,
+    top: screenHeight - 460,
+    focused: false
   });
-});
 
-stopBtn.addEventListener("click", () => {
-  setStatus("Stopping camera…");
-  chrome.runtime.sendMessage({ type: "STOP_CAMERA" }, (res) => {
-    if (res?.ok) {
-      setStatus("Camera stopped", "#374151");
-      startBtn.style.display = "block";
-      stopBtn.style.display = "none";
-    } else {
-      setStatus("Error stopping camera", "#b91c1c");
-    }
-  });
-});
+  cameraWindowId = win.id;
 
-// Update on open
-chrome.runtime.sendMessage({ type: "STATUS" }, (res) => {
-  if (res?.active) {
-    setStatus("Camera active ✅", "#047857");
-    startBtn.style.display = "none";
-    stopBtn.style.display = "block";
-  } else {
-    setStatus("Camera inactive");
-    startBtn.style.display = "block";
-    stopBtn.style.display = "none";
+  // ---- NEW FIX: Immediately minimize window (works on mac + windows) ----
+  try {
+    await new Promise(r => setTimeout(r, 150)); // brief delay ensures creation
+    await chrome.windows.update(cameraWindowId, { state: "minimized" });
+    console.log("[FocusFrame] Camera window minimized on start");
+  } catch (e) {
+    console.warn("Minimize failed:", e);
   }
+
+  startBtn.style.display = "none";
+  stopBtn.style.display = "block";
+});
+
+stopBtn.addEventListener("click", async () => {
+  if (cameraWindowId) {
+    try {
+      await chrome.windows.remove(cameraWindowId);
+    } catch (e) {
+      console.warn("Camera window already closed");
+    }
+    cameraWindowId = null;
+  }
+  startBtn.style.display = "block";
+  stopBtn.style.display = "none";
 });
