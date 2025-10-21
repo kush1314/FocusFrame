@@ -1,12 +1,10 @@
 let cameraWindowId = null;
-
 const startBtn = document.getElementById("startBtn");
 const stopBtn = document.getElementById("stopBtn");
 
 startBtn.addEventListener("click", async () => {
   if (cameraWindowId) return;
 
-  // Create small camera window without focus (prevents mac fullscreen)
   const screenWidth = screen.availWidth;
   const screenHeight = screen.availHeight;
 
@@ -22,9 +20,8 @@ startBtn.addEventListener("click", async () => {
 
   cameraWindowId = win.id;
 
-  // ---- NEW FIX: Immediately minimize window (works on mac + windows) ----
   try {
-    await new Promise(r => setTimeout(r, 150)); // brief delay ensures creation
+    await new Promise(r => setTimeout(r, 150)); // allow window creation
     await chrome.windows.update(cameraWindowId, { state: "minimized" });
     console.log("[FocusFrame] Camera window minimized on start");
   } catch (e) {
@@ -38,12 +35,20 @@ startBtn.addEventListener("click", async () => {
 stopBtn.addEventListener("click", async () => {
   if (cameraWindowId) {
     try {
+      // ✅ Send stop signal to camera window
+      chrome.runtime.sendMessage({ type: "CLOSE_CAMERA" });
+
+      // Wait a moment for camera to stop
+      await new Promise(r => setTimeout(r, 200));
+
       await chrome.windows.remove(cameraWindowId);
+      console.log("[FocusFrame] Camera window closed cleanly");
     } catch (e) {
-      console.warn("Camera window already closed");
+      console.warn("Camera window already closed:", e);
     }
     cameraWindowId = null;
   }
+
   startBtn.style.display = "block";
   stopBtn.style.display = "none";
 });
