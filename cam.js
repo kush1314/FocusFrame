@@ -6,6 +6,10 @@ const status  = document.getElementById("status");
 
 let stream = null;
 
+// --- NEW: detect if this is a one-time permission request window ---
+const urlParams = new URLSearchParams(window.location.search);
+const isPermissionRequest = urlParams.get("permission_request") === "true";
+
 // Try to auto-start; if Chrome requires a gesture, the Start button is there.
 (async function autoTry() {
   try {
@@ -16,8 +20,15 @@ let stream = null;
     startBt.disabled = true;
     stopBt.disabled = false;
     status.textContent = "Camera active ✅";
+
+    // --- NEW: if opened just to request permission, close after success ---
+    if (isPermissionRequest) {
+      console.log("[FocusFrame] Permission window opened for camera access");
+      setTimeout(() => {
+        window.close();
+      }, 2000);
+    }
   } catch (e) {
-    // If NotAllowedError without gesture, user can click Start.
     console.warn("Auto start failed (will require button):", e);
     status.textContent = "Click Start and allow camera.";
   }
