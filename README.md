@@ -1,3 +1,4 @@
+# FocusFrame!
 ## Inspiration
 FocusFrame was born from a mix of creativity, fun, and challenge. Like many students, we struggled to stay focused on our work while working on our laptops. No matter how many times we told ourselves that "this time, I'll get my work done!", we always wound up on our phones or other distractions. That’s why we created FocusFrame, an intuitive Chrome Extension that uses your camera and reminds you to get back to work when it sees you off topic!
 
