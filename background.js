@@ -32,8 +32,8 @@ async function showIndicator() {
   const win = await chrome.windows.create({
     url: INDICATOR_URL,
     type: "popup",
-    width: 60,
-    height: 60,
+    width: 20,
+    height: 20,
     top: 50,
     left: screen.availWidth - 100, // near top-right corner
     focused: false,
